@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de Monedas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Conversor de Monedas</h1>
+    <div class="input-group">
+        <label for="cantidad">Cantidad a Convertir:</label>
+        <input type="number" id="cantidad" placeholder="Ingresa la cantidad">
+    </div>
+    <div class="input-group">
+        <label for="monedaOrigen">Moneda de Origen:</label>
+        <select id="monedaOrigen">
+            <option value="USD">Dólar (USD)</option>
+            <option value="MXN">Peso Mexicano (MXN)</option>
+            <option value="BRL">Real Brasileño (BRL)</option>
+            <option value="COP">Peso Colombiano (COP)</option>
+        </select>
+    </div>
+    <div class="input-group">
+        <label for="monedaDestino">Moneda de Destino:</label>
+        <select id="monedaDestino">
+            <option value="MXN">Peso Mexicano (MXN)</option>
+            <option value="USD">Dólar (USD)</option>
+            <option value="BRL">Real Brasileño (BRL)</option>
+            <option value="COP">Peso Colombiano (COP)</option>
+        </select>
+    </div>
+    <button onclick="convertirMoneda()">Convertir</button>
+
+    <div class="result" id="resultado"></div>
+</div>
+
+<script>
+    async function convertirMoneda() {
+        const cantidad = document.getElementById('cantidad').value;
+        const monedaOrigen = document.getElementById('monedaOrigen').value;
+        const monedaDestino = document.getElementById('monedaDestino').value;
+
+        if (!cantidad) {
+            alert('Por favor, ingresa una cantidad válida.');
+            return;
+        }
+
+        const API_KEY = 'a32122ecc1d21ebaee1b70cc'; // Tu clave API
+        const API_URL = `https://v6.exchangerate-api.com/v6/${API_KEY}/pair/${monedaOrigen}/${monedaDestino}/${cantidad}`;
+
+        try {
+            const response = await fetch(API_URL);
+            const data = await response.json();
+
+            if (data.result === 'success') {
+                const conversion = data.conversion_result;
+                document.getElementById('resultado').textContent = `${cantidad} ${monedaOrigen} equivale a ${conversion} ${monedaDestino}`;
+            } else {
+                document.getElementById('resultado').textContent = 'Error en la conversión. Inténtalo más tarde.';
+            }
+        } catch (error) {
+            document.getElementById('resultado').textContent = 'Error en la conexión a la API.';
+        }
+    }
+</script>
+
+</body>
+</html>
